@@ -1,0 +1,36 @@
+
+name: ET AI Crypto News Email
+
+on:
+  schedule:
+    - cron: "0 0,6,12,18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  send-crypto-news:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Send crypto news email
+        run: node news-job.js
+        env:
+          MANUS_API_KEY: ${{ secrets.MANUS_API_KEY }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          NEWS_EMAIL_TO: ${{ secrets.NEWS_EMAIL_TO }}
+          TZ: Asia/Dhaka
